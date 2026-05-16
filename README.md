@@ -45,9 +45,18 @@ python scripts/prepare_ucf101.py
 python scripts/prepare_ssv2.py
 ```
 
-**ImageNet-100:** Subset of ImageNet-1K (100 classes). Use standard ImageNet download and the class list from the config.
+**ImageNet-100:** Subset of ImageNet-1K (100 classes). Use standard ImageNet download and the class list from the config, or use the helper script:
+```bash
+python scripts/download_imagenet100.py
+```
 
 **Diving-48:** Download from the [official source](http://www.svcl.ucsd.edu/projects/resound/dataset.html).
+
+**Synthetic Motion (8-class):** Generate synthetic videos for the motion discrimination experiment:
+```bash
+python scripts/generate_synth_videos.py
+python scripts/generate_eval_synth_videos.py
+```
 
 ## Training
 
@@ -102,7 +111,8 @@ Checkpoints are saved to the `folder` specified in each YAML config.
 | Config | Objective |
 |--------|-----------|
 | `train_ucf101_4gpu_baseline.yaml` | Baseline |
-| `train_ucf101_4gpu_kinematic.yaml` | Kinematic Regularization |
+| `train_ucf101_4gpu_kinematic.yaml` | Kinematic Regularization (λ=1.0) |
+| `train_ucf101_4gpu_kinematic_0_1.yaml` | Kinematic Regularization (λ=0.1) |
 | `train_ucf101_4gpu_kinematic_huber.yaml` | Kinematic (Huber loss) |
 | `train_ucf101_4gpu_kinematic_accel.yaml` | Kinematic (acceleration) |
 | `train_ucf101_4gpu_kinematic_split.yaml` | Kinematic (split head) |
@@ -114,6 +124,13 @@ Checkpoints are saved to the `folder` specified in each YAML config.
 | `train_ucf101_4gpu_motion_guided.yaml` | Motion-Guided Masking |
 | `train_ucf101_4gpu_future_predictive.yaml` | Future-Predictive |
 | `train_ucf101_4gpu_motion_future.yaml` | Motion + Future |
+
+**Synthetic motion experiments** (for Table 4 in the paper):
+
+| Config | Objective |
+|--------|-----------|
+| `train_synth_2gpu_kinematic.yaml` | Kinematic on Synthetic |
+| `train_synth_2gpu_sigreg.yaml` | SIGReg on Synthetic |
 
 ## Evaluation
 
@@ -138,6 +155,18 @@ PYTHONPATH=vjepa2 python scripts/eval_ssv2.py \
     --checkpoint runs/train_mixed_4gpu_fwm_hw_ld/latest.pth.tar \
     --out_json results_new/fwm_hw_ld_ssv2.json \
     --name FWM-HW-LD
+
+# UCF-101 (for UCF-101-only pretraining experiments)
+PYTHONPATH=vjepa2 python scripts/eval_ucf101.py \
+    --config configs/train_ucf101_4gpu_baseline.yaml \
+    --checkpoint runs/train_ucf101_4gpu_baseline/latest.pth.tar \
+    --out_json results_new/baseline_ucf101.json \
+    --name Baseline
+
+# Synthetic Motion (8-class discrimination task)
+PYTHONPATH=vjepa2 python scripts/eval_kinematic.py \
+    --config configs/train_ucf101_4gpu_kinematic.yaml \
+    --checkpoint runs/train_ucf101_4gpu_kinematic/latest.pth.tar
 ```
 
 The evaluation scripts also contain original absolute dataset roots; update `base_dir` in each script for a new machine. Pre-computed evaluation results for all experiments are in `results/`.
