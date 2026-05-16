@@ -1,0 +1,18 @@
+{
+  "name": "FullToken-SpatioTemporal-Attention",
+  "probe_type": "st_attention",
+  "dataset": "Diving-48 (V2)",
+  "task": "frozen-encoder + full-spatiotemporal-token probe (48-class)",
+  "train_probe_samples": 15027,
+  "val_samples": 1970,
+  "top1_accuracy_percent": 5.99,
+  "params": {
+    "lr": 0.001,
+    "weight_decay": 0.01,
+    "epochs": 100,
+    "batch_size": 8,
+    "temporal_heads": 8
+  },
+  "checkpoint": "/a/mm/VJEPA2/runs/train_ucf101_4gpu_baseline/latest.pth.tar",
+  "config": "/a/mm/VJEPA2/configs/train_ucf101_4gpu_baseline.yaml"
+}

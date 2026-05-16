@@ -1,0 +1,15 @@
+{
+  "name": "Kinematic-JEPA-Split",
+  "dataset": "Diving-48 (V2)",
+  "task": "frozen-encoder + attentive probe (48-class)",
+  "train_probe_samples": 15027,
+  "val_samples": 1970,
+  "top1_accuracy_percent": 5.48,
+  "params": {
+    "lr": 0.001,
+    "weight_decay": 0.01,
+    "epochs": 100
+  },
+  "checkpoint": "/a/mm/VJEPA2/runs/train_ucf101_4gpu_kinematic_split/latest.pth.tar",
+  "config": "/a/mm/VJEPA2/configs/train_ucf101_4gpu_kinematic_split.yaml"
+}

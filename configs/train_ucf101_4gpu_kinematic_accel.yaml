@@ -1,0 +1,119 @@
+app: vjepa_2_1
+nodes: 1
+tasks_per_node: 4
+cpus_per_task: 8
+mem_per_gpu: 20G
+folder: /a/mm/VJEPA2/runs/train_ucf101_4gpu_kinematic_accel
+data:
+  dataset_type: VideoDataset
+  datasets:
+  - /a/mm/VJEPA2/data/ucf101/ucf101_train.csv
+  datasets_weights:
+  - 1.0
+  batch_size: 8
+  crop_size: 224
+  patch_size: 16
+  dataset_fpcs:
+  - 16
+  tubelet_size: 2
+  fps: 16
+  num_workers: 4
+  persistent_workers: false
+  pin_mem: true
+data_aug:
+  auto_augment: false
+  motion_shift: false
+  random_resize_aspect_ratio:
+  - 0.75
+  - 1.35
+  random_resize_scale:
+  - 0.3
+  - 1.0
+  reprob: 0.0
+loss:
+  loss_exp: 1.0
+  predict_all: true
+  reg_coeff: 0.0
+  shift_by_n: 0
+  weight_distance_loss: true
+mask:
+- aspect_ratio:
+  - 0.75
+  - 1.5
+  full_complement: false
+  max_keep: null
+  max_temporal_keep: 1.0
+  num_blocks: 8
+  spatial_scale:
+  - 0.15
+  - 0.15
+  temporal_scale:
+  - 1.0
+  - 1.0
+- aspect_ratio:
+  - 0.75
+  - 1.5
+  full_complement: false
+  max_keep: null
+  max_temporal_keep: 1.0
+  num_blocks: 2
+  spatial_scale:
+  - 0.7
+  - 0.7
+  temporal_scale:
+  - 1.0
+  - 1.0
+meta:
+  dtype: bfloat16
+  eval_freq: 1000000
+  load_checkpoint: false
+  read_checkpoint: null
+  save_every_freq: 1000000
+  seed: 239
+  use_sdpa: true
+model:
+  has_cls_first: false
+  img_temporal_dim_size: 1
+  interpolate_rope: true
+  is_causal: false
+  lambda_value_img: 0.5
+  lambda_value_vid: 0.5
+  local_window:
+  - -1
+  - -1
+  - -1
+  modality_embedding: true
+  model_name: vit_base
+  n_registers: 0
+  n_registers_predictor: 0
+  normalize_predictor: false
+  pred_depth: 8
+  pred_embed_dim: 256
+  pred_is_causal: false
+  pred_local_window:
+  - -1
+  - -1
+  - -1
+  pred_num_heads: 8
+  uniform_power: true
+  use_activation_checkpointing: true
+  use_mask_tokens: true
+  use_rope: true
+  vit_conv: false
+  zero_init_mask_tokens: true
+optimization:
+  disable_ema: true
+  kinematic_coeff: 0.1
+  kinematic_type: acceleration
+  ema:
+  - 0.99925
+  - 0.99925
+  epochs: 100
+  final_lr: 0.0006
+  final_weight_decay: 0.04
+  ipe: 300
+  ipe_scale: 1.0
+  lr: 0.0006
+  start_lr: 0.0001
+  warmup: 1
+  weight_decay: 0.04

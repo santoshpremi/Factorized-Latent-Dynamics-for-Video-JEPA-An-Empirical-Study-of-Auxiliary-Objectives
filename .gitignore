@@ -1,0 +1,45 @@
+# Checkpoints & model weights
+*.pth
+*.pth.tar
+*.pt
+
+# Training logs
+runs/*/log_r*.csv
+runs/*/params-pretrain.yaml
+
+# Data
+data/
+
+# Virtual environment
+.venv/
+__pycache__/
+*.pyc
+
+# Unrelated projects
+eb_jepa/
+lejepa/
+literature/
+
+# Kubernetes job definitions (infrastructure-specific)
+nngpt-*.json
+
+# Development patches & test scripts
+patch_*.py
+test_*.py
+
+# Personal notes
+recording-*.md
+
+# Report (paper goes to arXiv, not GitHub)
+Techical_Report/
+
+# OS / editor
+.DS_Store
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Logs
+logs/

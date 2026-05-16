@@ -1,0 +1,10 @@
+{
+  "name": "Baseline-VJEPA2",
+  "dataset": "Synthetic Motion (8-class)",
+  "task": "frozen-encoder + attentive probe",
+  "train_probe_samples": 160,
+  "val_samples": 40,
+  "top1_accuracy_percent": 27.5,
+  "checkpoint": "/a/mm/VJEPA2/runs/train_ucf101_4gpu_baseline/latest.pth.tar",
+  "config": "/a/mm/VJEPA2/configs/train_ucf101_4gpu_baseline.yaml"
+}

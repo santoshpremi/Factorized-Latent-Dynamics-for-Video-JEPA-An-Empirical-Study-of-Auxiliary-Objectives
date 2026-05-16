@@ -1,0 +1,15 @@
+{
+  "name": "LTC-JEPA",
+  "dataset": "Something-Something V2",
+  "task": "frozen-encoder + attentive probe (174-class)",
+  "train_probe_samples": 168913,
+  "val_samples": 24777,
+  "top1_accuracy_percent": 4.32,
+  "params": {
+    "lr": 0.001,
+    "weight_decay": 0.01,
+    "epochs": 100
+  },
+  "checkpoint": "/a/mm/VJEPA2/runs/train_mixed_4gpu_ltc/latest.pth.tar",
+  "config": "/a/mm/VJEPA2/configs/train_mixed_4gpu_ltc.yaml"
+}

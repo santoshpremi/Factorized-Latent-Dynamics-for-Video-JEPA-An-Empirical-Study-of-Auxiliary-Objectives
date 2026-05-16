@@ -1,0 +1,10 @@
+{
+  "name": "Baseline-VJEPA2",
+  "dataset": "UCF-101",
+  "task": "frozen-encoder + attentive probe (101-class)",
+  "train_probe_samples": 2000,
+  "val_samples": 500,
+  "top1_accuracy_percent": 16.6,
+  "checkpoint": "train_ucf101_4gpu_baseline/latest.pth.tar",
+  "config": "train_ucf101_4gpu_baseline.yaml"
+}

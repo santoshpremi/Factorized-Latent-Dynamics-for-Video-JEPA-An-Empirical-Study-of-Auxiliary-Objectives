@@ -1,0 +1,15 @@
+{
+  "name": "AC+HW-JEPA",
+  "dataset": "Diving-48 (V2)",
+  "task": "frozen-encoder + attentive probe (48-class)",
+  "train_probe_samples": 15027,
+  "val_samples": 1970,
+  "top1_accuracy_percent": 9.39,
+  "params": {
+    "lr": 0.001,
+    "weight_decay": 0.01,
+    "epochs": 100
+  },
+  "checkpoint": "/a/mm/VJEPA2/runs/train_mixed_4gpu_ac_hw/latest.pth.tar",
+  "config": "/a/mm/VJEPA2/configs/train_mixed_4gpu_ac_hw.yaml"
+}

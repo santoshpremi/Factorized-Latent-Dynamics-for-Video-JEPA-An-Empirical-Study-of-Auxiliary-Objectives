@@ -1,0 +1,10 @@
+{
+  "name": "Kinematic-JEPA-0.1",
+  "dataset": "UCF-101 (Full)",
+  "task": "frozen-encoder + attentive probe (101-class)",
+  "train_probe_samples": 9537,
+  "val_samples": 3783,
+  "top1_accuracy_percent": 25.17,
+  "checkpoint": "/a/mm/VJEPA2/runs/train_ucf101_4gpu_kinematic_0_1/latest.pth.tar",
+  "config": "/a/mm/VJEPA2/configs/train_ucf101_4gpu_kinematic_0_1.yaml"
+}

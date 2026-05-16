@@ -1,0 +1,15 @@
+{
+  "name": "Kinematic-JEPA-0.1",
+  "dataset": "ImageNet-100",
+  "task": "frozen-encoder + linear probe (100-class)",
+  "train_probe_samples": 126689,
+  "val_samples": 5000,
+  "top1_accuracy_percent": 13.66,
+  "params": {
+    "lr": 0.001,
+    "weight_decay": 0.01,
+    "epochs": 50
+  },
+  "checkpoint": "/a/mm/VJEPA2/runs/train_ucf101_4gpu_kinematic_0_1/latest.pth.tar",
+  "config": "/a/mm/VJEPA2/configs/train_ucf101_4gpu_kinematic_0_1.yaml"
+}
