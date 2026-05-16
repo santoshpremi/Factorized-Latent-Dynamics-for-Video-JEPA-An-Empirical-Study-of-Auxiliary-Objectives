@@ -1,13 +1,13 @@
 # Auxiliary Objectives for Video JEPA
 
-This repository contains code for a systematic empirical study of **18 auxiliary training objectives** for Video Joint-Embedding Predictive Architecture (V-JEPA). We evaluate how each objective affects transfer to motion-sensitive tasks (Diving-48, Something-Something V2) and appearance-sensitive tasks (ImageNet-100).
+This repository contains code for a small-scale empirical study of **18 auxiliary training objective variants** for Video Joint-Embedding Predictive Architecture (V-JEPA). We evaluate how these objectives affect transfer to motion-sensitive tasks (Diving-48, Something-Something V2) and appearance-sensitive tasks (ImageNet-100).
 
-The best-performing variant, **FWM-HW-LD** (Factorized World-Model with Hard-Region-Weighted Latent Dynamics), factorizes the latent space into appearance and dynamics subspaces and applies dynamics prediction purely in latent space.
+The most balanced variant in our mixed-dataset sweep, **FWM-HW-LD** (Factorized World-Model with Hard-Region-Weighted Latent Dynamics), factorizes the latent space into appearance and dynamics subspaces and applies dynamics prediction purely in latent space.
 
 ## Repository Structure
 
 ```
-configs/            # YAML configs for all 18 experiment variants
+configs/            # YAML configs for the reported experiment variants
 vjepa2/             # V-JEPA2 source code (modified train.py contains all auxiliary objectives)
 scripts/            # Evaluation and data preparation scripts
 results/            # Evaluation result JSONs for all experiments
@@ -27,15 +27,22 @@ Requires Python 3.10+ and PyTorch 2.0+.
 
 ## Data Preparation
 
+The scripts and YAML configs were run in the original cluster environment and contain absolute paths such as `/a/mm/VJEPA2/...`. Before running on a new machine, update the dataset CSV paths and output `folder` fields in the YAML configs.
+
+Expected training CSV format:
+
+```text
+/absolute/path/to/video.mp4 label_id
+```
+
 **UCF-101:**
 ```bash
-python scripts/download_ucf101.py --output_dir data/ucf101
-python scripts/prepare_ucf101.py --root data/ucf101
+python scripts/prepare_ucf101.py
 ```
 
 **Something-Something V2** (requires manual download from [Qualcomm](https://developer.qualcomm.com/software/ai-datasets/something-something)):
 ```bash
-python scripts/prepare_ssv2.py --root data/ssv2
+python scripts/prepare_ssv2.py
 ```
 
 **ImageNet-100:** Subset of ImageNet-1K (100 classes). Use standard ImageNet download and the class list from the config.
@@ -44,31 +51,36 @@ python scripts/prepare_ssv2.py --root data/ssv2
 
 ## Training
 
-All experiments use 4 GPUs. Configs are in `configs/`.
+All reported training runs use 4 GPUs. Configs are in `configs/`. Run from the repository root after adapting paths inside the YAML file.
 
 ```bash
 # Baseline (reference)
-torchrun --nproc_per_node=4 -m app.vjepa_2_1.train \
-    --fname configs/train_mixed_4gpu_baseline_seed42.yaml
+PYTHONPATH=vjepa2 python -m app.main \
+    --fname configs/train_mixed_4gpu_baseline_seed42.yaml \
+    --devices cuda:0 cuda:1 cuda:2 cuda:3
 
 # FWM-HW-LD (factorized latent dynamics with hard-region weighting)
-torchrun --nproc_per_node=4 -m app.vjepa_2_1.train \
-    --fname configs/train_mixed_4gpu_fwm_hw_ld.yaml
+PYTHONPATH=vjepa2 python -m app.main \
+    --fname configs/train_mixed_4gpu_fwm_hw_ld.yaml \
+    --devices cuda:0 cuda:1 cuda:2 cuda:3
 
 # Motion-Guided Masking
-torchrun --nproc_per_node=4 -m app.vjepa_2_1.train \
-    --fname configs/train_mixed_4gpu_motion_guided.yaml
+PYTHONPATH=vjepa2 python -m app.main \
+    --fname configs/train_mixed_4gpu_motion_guided.yaml \
+    --devices cuda:0 cuda:1 cuda:2 cuda:3
 ```
 
-Run from the repository root. Checkpoints are saved to `runs/<config_name>/`.
+Checkpoints are saved to the `folder` specified in each YAML config.
 
 ### Available Configs
 
-**Mixed-dataset experiments** (UCF-101 + SSv2 + Diving-48 + ImageNet-100):
+**Mixed-dataset experiments** (UCF-101 + SSv2 + ImageNet-100 pretraining; Diving-48 is evaluation only):
 
 | Config | Objective |
 |--------|-----------|
 | `train_mixed_4gpu_baseline_seed42.yaml` | Baseline (reference) |
+| `train_mixed_4gpu_baseline.yaml` | Baseline (additional run) |
+| `train_mixed_4gpu_baseline_seed1337.yaml` | Baseline (additional seed) |
 | `train_mixed_4gpu_motion_guided.yaml` | Motion-Guided Masking |
 | `train_mixed_4gpu_hw.yaml` | Hard-Region Weighted Loss |
 | `train_mixed_4gpu_delta.yaml` | Delta-Prediction |
@@ -107,32 +119,39 @@ Run from the repository root. Checkpoints are saved to `runs/<config_name>/`.
 
 ```bash
 # Diving-48 (attentive probe, 48 classes)
-python scripts/eval_diving48.py \
+PYTHONPATH=vjepa2 python scripts/eval_diving48.py \
     --config configs/train_mixed_4gpu_fwm_hw_ld.yaml \
-    --checkpoint runs/train_mixed_4gpu_fwm_hw_ld/latest.pth.tar
+    --checkpoint runs/train_mixed_4gpu_fwm_hw_ld/latest.pth.tar \
+    --out_json results_new/fwm_hw_ld_diving48.json \
+    --name FWM-HW-LD
 
 # ImageNet-100 (linear probe, 100 classes)
-python scripts/eval_imagenet100.py \
+PYTHONPATH=vjepa2 python scripts/eval_imagenet100.py \
     --config configs/train_mixed_4gpu_fwm_hw_ld.yaml \
-    --checkpoint runs/train_mixed_4gpu_fwm_hw_ld/latest.pth.tar
+    --checkpoint runs/train_mixed_4gpu_fwm_hw_ld/latest.pth.tar \
+    --out_json results_new/fwm_hw_ld_imagenet100.json \
+    --name FWM-HW-LD
 
 # Something-Something V2 (attentive probe, 174 classes)
-python scripts/eval_ssv2.py \
+PYTHONPATH=vjepa2 python scripts/eval_ssv2.py \
     --config configs/train_mixed_4gpu_fwm_hw_ld.yaml \
-    --checkpoint runs/train_mixed_4gpu_fwm_hw_ld/latest.pth.tar
+    --checkpoint runs/train_mixed_4gpu_fwm_hw_ld/latest.pth.tar \
+    --out_json results_new/fwm_hw_ld_ssv2.json \
+    --name FWM-HW-LD
 ```
 
-Pre-computed evaluation results for all experiments are in `results/`.
+The evaluation scripts also contain original absolute dataset roots; update `base_dir` in each script for a new machine. Pre-computed evaluation results for all experiments are in `results/`.
 
 ## Key Results (Mixed-Dataset, Single Seed)
 
 | Method | Diving-48 | ImageNet-100 | SSv2 |
 |--------|-----------|--------------|------|
 | Baseline (seed 42) | 8.68 | 24.86 | 8.39 |
-| Motion-Guided | -- | 19.70 | 6.19 |
 | FWM-HW-LD | 8.38 | 30.78 | 11.60 |
 
 All numbers are Top-1 accuracy (%). See `results/` for the full set.
+
+For the UCF-101-only setting, Motion-Guided Masking improves all three reported evaluation metrics relative to the UCF-101 baseline: Diving-48 8.38 -> 8.68, ImageNet-100 12.02 -> 12.16, and SSv2 2.07 -> 3.45.
 
 ## Pre-trained Checkpoints
 
@@ -144,4 +163,4 @@ Built on [V-JEPA](https://github.com/facebookresearch/vjepa) by Meta AI. Computi
 
 ## License
 
-The V-JEPA2 codebase is released under the [MIT License](vjepa2/LICENSE). Our modifications follow the same license.
+This repository follows the [MIT License](LICENSE). The underlying V-JEPA2 codebase is also released under the [MIT License](vjepa2/LICENSE).
